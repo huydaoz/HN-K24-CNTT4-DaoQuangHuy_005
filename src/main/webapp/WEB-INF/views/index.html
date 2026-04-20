@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách địa danh</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #aaa; padding: 10px; text-align: center; }
+        .no-data { color: red; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<div style="margin: 15px 0; display: flex; justify-content: space-between;">
+    <form th:action="@{/attraction/list}" method="get">
+        <input type="text" name="search" th:value="${param.search}" placeholder="Tìm theo tên hoặc tỉnh">
+        <button type="submit">Tìm kiếm</button>
+    </form>
+    <a th:href="@{/attraction/add}"><button>Thêm mới</button></a>
+</div>
+
+<table>
+    <thead>
+    <tr style="background-color: #eee;">
+        <th>STT</th>
+        <th>Tên địa danh</th>
+        <th>Tỉnh/Thành phố</th>
+        <th>Đánh giá</th>
+        <th>Hình ảnh</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item, state : ${items}">
+        <td th:text="${state.count}"></td>
+        <td th:text="${item.name}"></td>
+        <td th:text="${item.location}"></td>
+        <td th:text="${item.rating}"></td>
+        <td>
+            <img th:if="${item.coverImage != null}" th:src="@{'/uploads/' + ${item.coverImage}}" width="80">
+            <img th:unless="${item.coverImage != null}" src="https://via.placeholder.com/80x50" width="80">
+        </td>
+        <td >
+            <a th:href="@{/attraction/edit/{id}(id=${item.id})}"><button type="button">Sửa</button></a>
+            <a th:href="@{/attraction/delete/{id}(id=${item.id})}" onclick="return confirm('Xác nhận xóa?')"><button type="button" >Xóa</button></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${#lists.isEmpty(items)}" class="no-data">
+    "Chưa có địa danh nào trong danh sách"
+</div>
+
+</body>
+</html>
